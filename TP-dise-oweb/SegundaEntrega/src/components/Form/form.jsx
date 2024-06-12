@@ -600,6 +600,7 @@ const  [descripcion2, setDescripcion2] = useState('');
       {/* alojamiento servicios */}
       <form onSubmit={(e) => enviarNuevoAlojamientoServicio(e, parseInt(idAlojamiento), parseInt(idServicio))}>
   <select value={idAlojamiento} onChange={(e) => setIdAlojamiento(e.target.value)}>
+    <option value="">Selecciona un alojamiento</option>
     {alojamientos.map((alojamiento, index) => (
       <option key={index} value={alojamiento.id}>
         {alojamiento.idAlojamiento} {alojamiento.Titulo}
@@ -607,6 +608,7 @@ const  [descripcion2, setDescripcion2] = useState('');
     ))}
   </select>
   <select value={idServicio} onChange={(e) => setIdServicio(e.target.value)}>
+    <option value="">Selecciona un servicio</option>
     {servicios.map((servicio) => (
       <option key={servicio.idServicio} value={servicio.id}>
         {servicio.idServicio} {servicio.Nombre}
@@ -615,7 +617,6 @@ const  [descripcion2, setDescripcion2] = useState('');
   </select>
   <button type="submit">Enviar</button>
 </form>
-
       {/* imagenes */}
       <form onSubmit={enviarNuevaImagen}>
     <div>
