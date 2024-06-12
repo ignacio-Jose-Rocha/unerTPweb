@@ -723,7 +723,7 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
                 </>
               ) : (
                 <>
-                  {tipo.idTipoAlojamiento}, {tipo.Descripcion}
+                  {tipo.Descripcion}
                   <button onClick={() => iniciarEdicion(tipo)}>Editar</button>
                   <button onClick={() => eliminarAlojamiento(tipo.idTipoAlojamiento)}>Eliminar</button>
                 </>
@@ -734,32 +734,48 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
       </ul>
       {/* alojamiento Servicio */}
       <h2>Lista de Alojamientos servicios</h2>
-      <ul>
-        {alojamientosServicios.map((alojamientoServicio, index) => (
-          <li key={index}>
-            {alojamientoServicioEditando === alojamientoServicio.idAlojamientoServicio ? (
-              <>
-                <label>
-                  ID Alojamiento:
-                  <input type="text" value={idAlojamientoEditando} onChange={e => setIdAlojamientoEditando(e.target.value)} />
-                </label>
-                <label>
-                  ID Servicio:
-                  <input type="text" value={idServicioEditando} onChange={e => setIdServicioEditando(e.target.value)} />
-                </label>
-                <button onClick={confirmarEdicionAlojamientoServicio}>Confirmar</button>
-              </>
-            ) : (
-              <>
-                {alojamientoServicio.idAlojamientoServicio} {alojamientoServicio.idAlojamiento} {alojamientoServicio.idServicio}
-                <button onClick={() => iniciarEdicionAlojamientoServicio(alojamientoServicio)}>Editar</button>
-                <button onClick={() => eliminarAlojamientoServicio(alojamientoServicio.idAlojamientoServicio)}>Eliminar</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+<ul>
+  {alojamientosServicios.map((alojamientoServicio, index) => {
+    const alojamientoCorrespondiente = alojamientos.find(alojamiento => alojamiento.idAlojamiento === alojamientoServicio.idAlojamiento);
+    const servicioCorrespondiente = servicios.find(servicio => servicio.idServicio === alojamientoServicio.idServicio);
 
+    return (
+      <li key={index}>
+        {alojamientoServicioEditando === alojamientoServicio.idAlojamientoServicio ? (
+          <>
+            <label>
+              Alojamiento:
+              <select value={idAlojamientoEditando} onChange={e => setIdAlojamientoEditando(e.target.value)}>
+                {alojamientos.map((alojamiento) => (
+                  <option key={alojamiento.idAlojamiento} value={alojamiento.idAlojamiento}>
+                    {alojamiento.Titulo}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Servicio:
+              <select value={idServicioEditando} onChange={e => setIdServicioEditando(e.target.value)}>
+                {servicios.map((servicio) => (
+                  <option key={servicio.idServicio} value={servicio.idServicio}>
+                    {servicio.Nombre}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button onClick={confirmarEdicionAlojamientoServicio}>Confirmar</button>
+          </>
+        ) : (
+          <>
+            {alojamientoCorrespondiente ? alojamientoCorrespondiente.Titulo : 'Alojamiento no encontrado'} {servicioCorrespondiente ? servicioCorrespondiente.Nombre : 'Servicio no encontrado'}
+            <button onClick={() => iniciarEdicionAlojamientoServicio(alojamientoServicio)}>Editar</button>
+            <button onClick={() => eliminarAlojamientoServicio(alojamientoServicio.idAlojamientoServicio)}>Eliminar</button>
+          </>
+        )}
+      </li>
+    );
+  })}
+</ul>
       {/* Servicios */}
       <h2>Servicios</h2>
       {servicios.map((servicio, index) => {
@@ -776,7 +792,7 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
               </>
             ) : (
               <>
-                {servicio.idServicio}, {servicio.Nombre}
+                {servicio.Nombre}
                 <button onClick={() => iniciarEdicionServicio(servicio)}>Editar</button>
                 <button onClick={() => eliminarServicios(servicio.idServicio)}>Eliminar</button>
               </>
