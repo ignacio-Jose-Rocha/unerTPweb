@@ -40,7 +40,7 @@ const AddAlojamiento = () => {
   const [imagenEditando, setImagenEditando] = useState(null);
 const [rutaArchivoEditando, setRutaArchivoEditando] = useState('');
 const [idImagenEditando, setIdImagenEditando] = useState('');
-
+const  [descripcion2, setDescripcion2] = useState('');
   
   {/* imagenes */ }
   const enviarNuevaImagen = async (e) => {
@@ -103,7 +103,6 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
     setIdImagenEditando(imagen.idImagen);
     setRutaArchivoEditando(imagen.RutaArchivo);
   };
-  
   const confirmarEdicionImagen = async () => {
     const imagenActualizada = {
       idImagen: idImagenEditando,
@@ -291,6 +290,7 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
   //alojamiento
   const enviarNuevoAlojamiento = async (event) => {
     event.preventDefault();
+    const idAlojamiento = Math.floor(Math.random() * 1000000);
 
     try {
       const response = await fetch('http://localhost:3000/alojamiento/createAlojamiento', {
@@ -299,6 +299,8 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          idAlojamiento: idAlojamiento,
+        
           titulo: titulo,
           descripcion: descripcion,
           latitud: latitud,
@@ -398,7 +400,7 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
   const enviar = async (e) => {
     e.preventDefault();
     const newAlojamiento = {
-      Descripcion: descripcion
+      Descripcion: descripcion2
     };
     try {
       const response = await fetch('http://localhost:3000/tiposAlojamiento/createTipoAlojamiento', {
@@ -571,18 +573,17 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
       </form>
       {/* tipo de alojamiento */}
       <form onSubmit={enviar}>
-        <div>
-
-          <label htmlFor="descripcion">Descripcion: </label>
-          <input
-            type="text"
-            id="descripcion"
-            value={descripcion}
-            onChange={e => setDescripcion(e.target.value)}
-          />
-        </div>
-        <button type="submit">enviar</button>
-      </form>
+  <div>
+    <label htmlFor="descripcionAlojamiento">Descripcion: </label>
+    <input
+      type="text"
+      id="descripcionAlojamiento"
+      value={descripcion2}
+      onChange={e => setDescripcion2(e.target.value)}
+    />
+  </div>
+  <button type="submit">enviar</button>
+</form>
       { /* servicios */}
       <form onSubmit={enviarNuevoServicio}>
         <div>
@@ -696,7 +697,7 @@ const [idImagenEditando, setIdImagenEditando] = useState('');
                 </>
               ) : (
                 <>
-                  {alojamiento.idAlojamiento}, {alojamiento.Titulo}, {alojamiento.Descripcion} {alojamiento.latitud} {alojamiento.longitud}  {alojamiento.PrecioPorDia}
+                  {alojamiento.Titulo}, {alojamiento.Descripcion} {alojamiento.latitud} {alojamiento.longitud}  {alojamiento.PrecioPorDia}
                   {alojamiento.CantidadDormitorios} {alojamiento.CantidadBanios} {alojamiento.Estado} {alojamiento.TipoAlojamiento} {alojamiento.idTipoAlojamiento}
                   <button onClick={() => iniciarEdicion1(alojamiento)}>Editar</button>
                   <button onClick={() => eliminarAlojamientoPorId(alojamiento.idAlojamiento)}>Eliminar</button>
