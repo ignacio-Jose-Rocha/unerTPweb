@@ -32,7 +32,6 @@ CREATE TABLE `alojamientos` (
   `CantidadDormitorios` int NOT NULL,
   `CantidadBanios` int NOT NULL,
   `Estado` enum('Disponible','Reservado') NOT NULL,
-  `TipoAlojamiento` int DEFAULT NULL,
   `idTipoAlojamiento` int DEFAULT NULL,
   PRIMARY KEY (`idAlojamiento`),
   KEY `idTipoAlojamiento` (`idTipoAlojamiento`),
