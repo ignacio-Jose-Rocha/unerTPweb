@@ -37,9 +37,9 @@ const AddAlojamiento = () => {
   const [imagen, setImagen] = useState('');
   const [imagenes, setImagenes] = useState([]);
   const [imagenEditando, setImagenEditando] = useState(null);
-const [rutaArchivoEditando, setRutaArchivoEditando] = useState('');
-const [, setIdImagenEditando] = useState('');
-const  [descripcion2, setDescripcion2] = useState('');
+  const [rutaArchivoEditando, setRutaArchivoEditando] = useState('');
+  const [, setIdImagenEditando] = useState('');
+  const  [descripcion2, setDescripcion2] = useState('');
   const [idAlojamiento1,setIdAlojamiento1] = useState('');
   {/* imagenes */ }
   const enviarNuevaImagen = async (e) => {
@@ -93,6 +93,7 @@ const  [descripcion2, setDescripcion2] = useState('');
       })
       .then(data => {
         alert('Imagen eliminada con éxito:', data);
+        obtenerImagenes();
       })
       .catch(error => {
         alert('Error:', error);
@@ -106,13 +107,30 @@ const  [descripcion2, setDescripcion2] = useState('');
     setIdAlojamientoEditando(imagen.idAlojamiento);
     obtenerImagenes();
   };
-  const confirmarEdicionImagen = () => {
-    const imagenAEditar = imagenes.find(imagen => imagen.idImagen === imagenEditando);
+  const confirmarEdicionImagen = async () => {
+    const imagenAEditar = {
+      RutaArchivo: rutaArchivoEditando,
+      idAlojamiento: idAlojamientoEditando,
+    };
   
-    imagenAEditar.RutaArchivo = rutaArchivoEditando;
-    imagenAEditar.idAlojamiento = idAlojamientoEditando;
+    try {
+      const response = await fetch(`http://localhost:3000/imagen/updateImagen/${imagenEditando}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(imagenAEditar)
+      });
   
-    setImagenes(imagenes.map(imagen => imagen.idImagen === imagenEditando ? imagenAEditar : imagen));
+      if (response.ok) {
+        alert('Imagen actualizada');
+        obtenerImagenes();
+      } else {
+        alert('Error al actualizar la imagen');
+      }
+    } catch (error) {
+      console.error('Error al actualizar la imagen', error);
+    }
   
     setImagenEditando(null);
     setRutaArchivoEditando('');
@@ -574,7 +592,7 @@ const  [descripcion2, setDescripcion2] = useState('');
     />
   </div>
   <button type="submit">enviar</button>
-</form>
+      </form>
       { /* servicios */}
       <form onSubmit={enviarNuevoServicio}>
         <div>
@@ -590,12 +608,12 @@ const  [descripcion2, setDescripcion2] = useState('');
       </form>
       {/* alojamiento servicios */}
       <form onSubmit={(e) => enviarNuevoAlojamientoServicio(e, parseInt(idAlojamiento), parseInt(idServicio))}>
-  <select value={idAlojamiento} onChange={(e) => setIdAlojamiento(e.target.value)}>
-    <option value="">Selecciona un alojamiento</option>
-    {alojamientos.map((alojamiento, index) => (
-      <option key={index} value={alojamiento.id}>
-        {alojamiento.idAlojamiento} {alojamiento.Titulo}
-      </option>
+      <select value={idAlojamiento} onChange={(e) => setIdAlojamiento(e.target.value)}>
+        <option value="">Selecciona un alojamiento</option>
+        {alojamientos.map((alojamiento, index) => (
+          <option key={index} value={alojamiento.id}>
+            {alojamiento.idAlojamiento} {alojamiento.Titulo}
+          </option>
     ))}
   </select>
   <select value={idServicio} onChange={(e) => setIdServicio(e.target.value)}>
@@ -607,7 +625,7 @@ const  [descripcion2, setDescripcion2] = useState('');
     ))}
   </select>
   <button type="submit">Enviar</button>
-</form>
+      </form>
       {/* imagenes */}
       <form onSubmit={(e) => enviarNuevaImagen(e)}>
   <div>
@@ -631,7 +649,7 @@ const  [descripcion2, setDescripcion2] = useState('');
     </select>
   </div>
   <button type="submit">Agregar imagen</button>
-</form>
+      </form>
 
       {/*------------- */}
       {/* alojamiento */}
@@ -729,48 +747,48 @@ const  [descripcion2, setDescripcion2] = useState('');
       </ul>
       {/* alojamiento Servicio */}
       <h2>Lista de Alojamientos servicios</h2>
-<ul>
-  {alojamientosServicios.map((alojamientoServicio, index) => {
-    const alojamientoCorrespondiente = alojamientos.find(alojamiento => alojamiento.idAlojamiento === alojamientoServicio.idAlojamiento);
-    const servicioCorrespondiente = servicios.find(servicio => servicio.idServicio === alojamientoServicio.idServicio);
+      <ul>
+        {alojamientosServicios.map((alojamientoServicio, index) => {
+          const alojamientoCorrespondiente = alojamientos.find(alojamiento => alojamiento.idAlojamiento === alojamientoServicio.idAlojamiento);
+          const servicioCorrespondiente = servicios.find(servicio => servicio.idServicio === alojamientoServicio.idServicio);
 
-    return (
-      <li key={index}>
-        {alojamientoServicioEditando === alojamientoServicio.idAlojamientoServicio ? (
-          <>
-            <label>
-              Alojamiento:
-              <select value={idAlojamientoEditando} onChange={e => setIdAlojamientoEditando(e.target.value)}>
-                {alojamientos.map((alojamiento) => (
-                  <option key={alojamiento.idAlojamiento} value={alojamiento.idAlojamiento}>
-                    {alojamiento.Titulo}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Servicio:
-              <select value={idServicioEditando} onChange={e => setIdServicioEditando(e.target.value)}>
-                {servicios.map((servicio) => (
-                  <option key={servicio.idServicio} value={servicio.idServicio}>
-                    {servicio.Nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button onClick={confirmarEdicionAlojamientoServicio}>Confirmar</button>
-          </>
-        ) : (
-          <>
-            {alojamientoCorrespondiente ? alojamientoCorrespondiente.Titulo : 'Alojamiento no encontrado'} {servicioCorrespondiente ? servicioCorrespondiente.Nombre : 'Servicio no encontrado'}
-            <button onClick={() => iniciarEdicionAlojamientoServicio(alojamientoServicio)}>Editar</button>
-            <button onClick={() => eliminarAlojamientoServicio(alojamientoServicio.idAlojamientoServicio)}>Eliminar</button>
-          </>
-        )}
-      </li>
-    );
-  })}
-</ul>
+          return (
+            <li key={index}>
+              {alojamientoServicioEditando === alojamientoServicio.idAlojamientoServicio ? (
+                <>
+                  <label>
+                    Alojamiento:
+                    <select value={idAlojamientoEditando} onChange={e => setIdAlojamientoEditando(e.target.value)}>
+                      {alojamientos.map((alojamiento) => (
+                        <option key={alojamiento.idAlojamiento} value={alojamiento.idAlojamiento}>
+                          {alojamiento.Titulo}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Servicio:
+                    <select value={idServicioEditando} onChange={e => setIdServicioEditando(e.target.value)}>
+                      {servicios.map((servicio) => (
+                        <option key={servicio.idServicio} value={servicio.idServicio}>
+                          {servicio.Nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button onClick={confirmarEdicionAlojamientoServicio}>Confirmar</button>
+                </>
+              ) : (
+                <>
+                  {alojamientoCorrespondiente ? alojamientoCorrespondiente.Titulo : 'Alojamiento no encontrado'} {servicioCorrespondiente ? servicioCorrespondiente.Nombre : 'Servicio no encontrado'}
+                  <button onClick={() => iniciarEdicionAlojamientoServicio(alojamientoServicio)}>Editar</button>
+                  <button onClick={() => eliminarAlojamientoServicio(alojamientoServicio.idAlojamientoServicio)}>Eliminar</button>
+                </>
+              )}
+            </li>
+          );
+        })}
+      </ul>
       {/* Servicios */}
       <h2>Servicios</h2>
       {servicios.map((servicio, index) => {
@@ -797,10 +815,10 @@ const  [descripcion2, setDescripcion2] = useState('');
       })}
       {/* imagenes */}
       <h2>imagenes</h2>
-<div>
+      <div>
   {imagenes.map((imagen, index) => (
     <div key={index}>
-      <img src={imagen.RutaArchivo} alt={`ruta Imagen ${imagen.RutaArchivo} idImagen ${imagen.idImagen}`} />
+      <img src={imagen.RutaArchivo} alt={`ruta Imagen ${imagen.RutaArchivo} id alojamiento ${imagen.idAlojamiento}`} />
       {imagenEditando === imagen.idImagen ? (
         <div>
           <input
@@ -809,12 +827,18 @@ const  [descripcion2, setDescripcion2] = useState('');
             onChange={e => setRutaArchivoEditando(e.target.value)}
             placeholder="Ruta del archivo"
           />
-          <input
-            type="text"
+          <select
             value={idAlojamientoEditando}
             onChange={e => setIdAlojamientoEditando(e.target.value)}
             placeholder="ID de alojamiento"
-          />
+          >
+            <option value="">Selecciona un alojamiento</option>
+            {alojamientos.map((alojamiento, index) => (
+              <option key={index} value={alojamiento.idAlojamiento}>
+                {alojamiento.idAlojamiento} - {alojamiento.Titulo}
+              </option>
+            ))}
+          </select>
           <button onClick={confirmarEdicionImagen}>Confirmar Edición</button>
         </div>
       ) : (
@@ -824,8 +848,8 @@ const  [descripcion2, setDescripcion2] = useState('');
     </div>
   ))}
 </div>
-</div>
-  );
+    </div>
+      );
 };
 
 export default AddAlojamiento;
