@@ -41,6 +41,7 @@ const AddAlojamiento = () => {
   const [, setIdImagenEditando] = useState('');
   const  [descripcion2, setDescripcion2] = useState('');
   const [idAlojamiento1,setIdAlojamiento1] = useState('');
+  const [idTipoAlojamientoEditando, setIdTipoAlojamientoEditando] = useState('');
   {/* imagenes */ }
   const enviarNuevaImagen = async (e) => {
     e.preventDefault();
@@ -308,17 +309,18 @@ const AddAlojamiento = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          idAlojamiento: idAlojamiento,
-        
-          titulo: titulo,
-          descripcion: descripcion,
-          latitud: latitud,
-          longitud: longitud,
-          precioPorDia: precioPorDia, cantidadDormitorios: cantidadDormitorios,
-          cantidadBanios: cantidadBanios,
-          estado: estado,
-          tipoAlojamiento: tipoAlojamiento
-        })
+  idAlojamiento: idAlojamiento,
+  titulo: titulo,
+  descripcion: descripcion,
+  latitud: latitud,
+  longitud: longitud,
+  precioPorDia: precioPorDia,
+  cantidadDormitorios: cantidadDormitorios,
+  cantidadBanios: cantidadBanios,
+  estado: estado,
+  
+  idTipoAlojamiento: tipoAlojamiento
+})
       });
 
       if (response.ok) {
@@ -569,15 +571,22 @@ const AddAlojamiento = () => {
             onChange={e => setEstado(e.target.value)}
           />
         </div>
+        
         <div>
-          <label htmlFor="tipoAlojamiento">Tipo de Alojamiento: </label>
-          <input
-            type="text"
-            id="tipoAlojamiento"
-            value={tipoAlojamiento}
-            onChange={e => setTipoAlojamiento(e.target.value)}
-          />
-        </div>
+  <label htmlFor="tipoAlojamiento">Tipo de Alojamiento: </label>
+  <select
+    id="tipoAlojamiento"
+    value={tipoAlojamiento}
+    onChange={e => setTipoAlojamiento(e.target.value)}
+  >
+    <option value="">Selecciona un tipo de alojamiento</option>
+    {tiposAlojamiento.map((tipoAlojamiento, index) => (
+      <option key={index} value={tipoAlojamiento.idTipoAlojamiento}>
+        {tipoAlojamiento.idTipoAlojamiento}
+      </option>
+    ))}
+  </select>
+</div>
         <button type="submit">enviar</button>
       </form>
       {/* tipo de alojamiento */}
@@ -705,6 +714,19 @@ const AddAlojamiento = () => {
                     value={longitudEditando}
                     onChange={e => setLongitudEditando(e.target.value)}
                   />
+                   <label htmlFor="tipoAlojamiento">Tipo de Alojamiento: </label>
+  <select
+    id="tipoAlojamiento"
+    value={idTipoAlojamientoEditando}
+    onChange={e => setIdTipoAlojamientoEditando(e.target.value)}
+  >
+    <option value="">Selecciona un tipo de alojamiento</option>
+    {tiposAlojamiento.map((tipoAlojamiento, index) => (
+      <option key={index} value={tipoAlojamiento.idTipoAlojamiento}>
+        {tipoAlojamiento.idTipoAlojamiento}
+      </option>
+    ))}
+  </select>
                   <button onClick={confirmarEdicion1}>Confirmar</button>
                 </>
               ) : (
