@@ -35,19 +35,20 @@ const AddAlojamiento = () => {
   const [idAlojamientoEditando, setIdAlojamientoEditando] = useState(null);
   const [idServicioEditando, setIdServicioEditando] = useState(null);
   const [imagen, setImagen] = useState('');
-  const [idImagen, setIdImagen] = useState('');
   const [imagenes, setImagenes] = useState([]);
   const [imagenEditando, setImagenEditando] = useState(null);
 const [rutaArchivoEditando, setRutaArchivoEditando] = useState('');
-const [idImagenEditando, setIdImagenEditando] = useState('');
+const [, setIdImagenEditando] = useState('');
 const  [descripcion2, setDescripcion2] = useState('');
-  
+  const [idAlojamiento1,setIdAlojamiento1] = useState('');
   {/* imagenes */ }
   const enviarNuevaImagen = async (e) => {
     e.preventDefault();
+    const idImagen = Math.floor(Math.random() * 1000000);
     const newImagen = {
       idImagen: idImagen,
-      RutaArchivo: imagen
+      RutaArchivo: imagen,
+      idAlojamiento: idAlojamiento1
     };
     try {
       const response = await fetch('http://localhost:3000/imagen/createImagen', {
@@ -102,30 +103,20 @@ const  [descripcion2, setDescripcion2] = useState('');
     setImagenEditando(imagen.idImagen);
     setIdImagenEditando(imagen.idImagen);
     setRutaArchivoEditando(imagen.RutaArchivo);
+    setIdAlojamientoEditando(imagen.idAlojamiento);
+    obtenerImagenes();
   };
-  const confirmarEdicionImagen = async () => {
-    const imagenActualizada = {
-      idImagen: idImagenEditando,
-      RutaArchivo: rutaArchivoEditando,
-    };
-    try {
-      const response = await fetch(`http://localhost:3000/imagen/updateImagen/${imagenEditando}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(imagenActualizada)
-      });
-      if (response.ok) {
-        alert('Imagen actualizada');
-        obtenerImagenes();
-      } else {
-        alert('Error al actualizar la imagen');
-      }
-    } catch (error) {
-      console.error('Error al actualizar la imagen', error);
-    }
+  const confirmarEdicionImagen = () => {
+    const imagenAEditar = imagenes.find(imagen => imagen.idImagen === imagenEditando);
+  
+    imagenAEditar.RutaArchivo = rutaArchivoEditando;
+    imagenAEditar.idAlojamiento = idAlojamientoEditando;
+  
+    setImagenes(imagenes.map(imagen => imagen.idImagen === imagenEditando ? imagenAEditar : imagen));
+  
     setImagenEditando(null);
+    setRutaArchivoEditando('');
+    setIdAlojamientoEditando('');
   };
   {/* alojamiento servicios*/ }
   const enviarNuevoAlojamientoServicio = async (e, idAlojamiento, idServicio) => {
@@ -618,27 +609,29 @@ const  [descripcion2, setDescripcion2] = useState('');
   <button type="submit">Enviar</button>
 </form>
       {/* imagenes */}
-      <form onSubmit={enviarNuevaImagen}>
-    <div>
-      <label htmlFor="imagen">Imagen: </label>
-      <input
-        type="text"
-        id="imagen"
-        value={imagen}
-        onChange={e => setImagen(e.target.value)}
-      />
-    </div>
-    <div>
-      <label htmlFor="idImagen">ID de la Imagen: </label>
-      <input
-        type="text"
-        id="idImagen"
-        value={idImagen}
-        onChange={e => setIdImagen(e.target.value)}
-      />
-    </div>
-    <button type="submit">agregar imagen</button>
-  </form>
+      <form onSubmit={(e) => enviarNuevaImagen(e)}>
+  <div>
+    <label htmlFor="imagen">Imagen: </label>
+    <input
+      type="text"
+      id="imagen"
+      value={imagen}
+      onChange={e => setImagen(e.target.value)}
+    />
+  </div>
+  <div>
+    <label htmlFor="idAlojamiento">ID de Alojamiento: </label>
+    <select id="idAlojamiento" value={idAlojamiento1} onChange={e => setIdAlojamiento1(e.target.value)}>
+      <option value="">Selecciona un alojamiento</option>
+      {alojamientos.map((alojamiento, index) => (
+        <option key={index} value={alojamiento.idAlojamiento}>
+          {alojamiento.idAlojamiento} - {alojamiento.Titulo}
+        </option>
+      ))}
+    </select>
+  </div>
+  <button type="submit">Agregar imagen</button>
+</form>
 
       {/*------------- */}
       {/* alojamiento */}
@@ -812,15 +805,15 @@ const  [descripcion2, setDescripcion2] = useState('');
         <div>
           <input
             type="text"
-            value={idImagenEditando}
-            onChange={e => setIdImagenEditando(e.target.value)}
-            placeholder="ID de la imagen"
-          />
-          <input
-            type="text"
             value={rutaArchivoEditando}
             onChange={e => setRutaArchivoEditando(e.target.value)}
             placeholder="Ruta del archivo"
+          />
+          <input
+            type="text"
+            value={idAlojamientoEditando}
+            onChange={e => setIdAlojamientoEditando(e.target.value)}
+            placeholder="ID de alojamiento"
           />
           <button onClick={confirmarEdicionImagen}>Confirmar Edición</button>
         </div>
