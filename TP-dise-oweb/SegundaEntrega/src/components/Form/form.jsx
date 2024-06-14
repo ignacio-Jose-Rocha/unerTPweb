@@ -61,6 +61,7 @@ const AddAlojamiento = () => {
       });
       if (response.ok) {
         alert('Imagen agregada');
+        obtenerImagenes();
       } else {
         alert('Error al agregar la imagen');
       }
@@ -154,6 +155,7 @@ const AddAlojamiento = () => {
       });
       if (response.ok) {
         alert('Servicio de alojamiento agregado');
+        obtenerAlojamientosServicios();
       } else {
         alert('Error al agregar el servicio de alojamiento');
       }
@@ -234,6 +236,7 @@ const AddAlojamiento = () => {
       });
       if (response.ok) {
         alert('Servicio agregado');
+        MostrarServicios();
       } else {
         alert('Error al agregar el servicio');
       }
@@ -318,7 +321,6 @@ const AddAlojamiento = () => {
   cantidadDormitorios: cantidadDormitorios,
   cantidadBanios: cantidadBanios,
   estado: estado,
-  
   idTipoAlojamiento: tipoAlojamiento
 })
       });
@@ -372,8 +374,9 @@ const AddAlojamiento = () => {
     setCantidadBaniosEditando(alojamiento.CantidadBanios);
     setEstadoEditando(alojamiento.Estado);
     setTipoAlojamientoEditando(alojamiento.TipoAlojamiento);
-    setLatitudEditando(alojamiento.latitud);
-    setLongitudEditando(alojamiento.longitud);
+    setLatitudEditando(alojamiento.Latitud);
+    setLongitudEditando(alojamiento.Longitud);
+    setIdTipoAlojamientoEditando(alojamiento.idTipoAlojamiento);
   };
   const confirmarEdicion1 = async () => {
     const alojamientoActualizado = {
@@ -385,7 +388,8 @@ const AddAlojamiento = () => {
       Estado: estadoEditando,
       TipoAlojamiento: tipoAlojamientoEditando,
       latitud: latitudEditando,
-      longitud: longitudEditando
+      longitud: longitudEditando,
+      idTipoAlojamiento: idTipoAlojamientoEditando
     };
     try {
       const response = await fetch(`http://localhost:3000/alojamiento/putAlojamiento/${alojamientoEditando}`, {
@@ -406,7 +410,6 @@ const AddAlojamiento = () => {
     }
     setAlojamientoEditando(null);
   };
-
   //tipo alojamiento
   const enviar = async (e) => {
     e.preventDefault();
@@ -422,7 +425,8 @@ const AddAlojamiento = () => {
         body: JSON.stringify(newAlojamiento)
       });
       if (response.ok) {
-        alert('alojamiento agregado');
+        alert('tipo alojamiento agregado');
+        obtenerTiposAlojamiento();
       } else {
         alert('error al agregar el alojamiento');
       }
@@ -573,7 +577,7 @@ const AddAlojamiento = () => {
         </div>
         
         <div>
-  <label htmlFor="tipoAlojamiento">Tipo de Alojamiento: </label>
+  <label htmlFor="tipoAlojamiento">id tipo de Alojamiento: </label>
   <select
     id="tipoAlojamiento"
     value={tipoAlojamiento}
@@ -592,7 +596,7 @@ const AddAlojamiento = () => {
       {/* tipo de alojamiento */}
       <form onSubmit={enviar}>
   <div>
-    <label htmlFor="descripcionAlojamiento">Descripcion: </label>
+    <label htmlFor="descripcionAlojamiento">ingrese tipo de alojamiento: </label>
     <input
       type="text"
       id="descripcionAlojamiento"
@@ -699,21 +703,18 @@ const AddAlojamiento = () => {
                     value={estadoEditando}
                     onChange={e => setEstadoEditando(e.target.value)}
                   />
-                  <input
-                    type="text"
-                    value={tipoAlojamientoEditando}
-                    onChange={e => setTipoAlojamientoEditando(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    value={latitudEditando}
-                    onChange={e => setLatitudEditando(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    value={longitudEditando}
-                    onChange={e => setLongitudEditando(e.target.value)}
-                  />
+                 
+                 <input
+      type="text"
+      value={latitudEditando}
+      onChange={e => setLatitudEditando(e.target.value)}
+    />
+    <input
+      type="text"
+      value={longitudEditando}
+      onChange={e => setLongitudEditando(e.target.value)}
+    />
+                  
                    <label htmlFor="tipoAlojamiento">Tipo de Alojamiento: </label>
   <select
     id="tipoAlojamiento"
@@ -731,8 +732,8 @@ const AddAlojamiento = () => {
                 </>
               ) : (
                 <>
-                  {alojamiento.Titulo}, {alojamiento.Descripcion} {alojamiento.latitud} {alojamiento.longitud}  {alojamiento.PrecioPorDia}
-                  {alojamiento.CantidadDormitorios} {alojamiento.CantidadBanios} {alojamiento.Estado} {alojamiento.TipoAlojamiento} {alojamiento.idTipoAlojamiento}
+                  {alojamiento.Titulo}, {alojamiento.PrecioPorDia}, {alojamiento.Descripcion} ,{alojamiento.Latitud}, {alojamiento.Longitud},  
+                  {alojamiento.CantidadDormitorios} ,{alojamiento.CantidadBanios} ,{alojamiento.Estado} ,{alojamiento.idTipoAlojamiento}
                   <button onClick={() => iniciarEdicion1(alojamiento)}>Editar</button>
                   <button onClick={() => eliminarAlojamientoPorId(alojamiento.idAlojamiento)}>Eliminar</button>
                 </>
